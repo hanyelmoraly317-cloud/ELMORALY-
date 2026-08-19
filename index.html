@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELMORALY</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 20% 20%, #6a00ff55, transparent 30%),
+        radial-gradient(circle at 80% 80%, #00ff9955, transparent 30%),
+        linear-gradient(135deg, #080018, #12002b, #02030b);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game {
+    width: 90%;
+    max-width: 420px;
+    padding: 28px 22px;
+    text-align: center;
+    background: rgba(10, 10, 30, 0.82);
+    border: 1px solid #8b5cff66;
+    border-radius: 25px;
+    box-shadow: 0 0 40px #6c00ff55;
+}
+
+h1 {
+    margin: 0;
+    font-size: 42px;
+    color: #ff9d00;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    margin-top: 12px;
+    font-size: 20px;
+    color: #ff00d9;
+    font-weight: bold;
+}
+
+.score {
+    margin: 22px 0;
+    font-size: 25px;
+    color: #00ff91;
+    font-weight: bold;
+}
+
+.info {
+    color: #ddd;
+    margin-bottom: 15px;
+}
+
+input {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid #8b5cff;
+    border-radius: 14px;
+    background: #090918;
+    color: white;
+    font-size: 22px;
+    text-align: center;
+    outline: none;
+    margin-bottom: 15px;
+}
+
+button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.guess {
+    background: linear-gradient(90deg, #00d95f, #00ff91);
+    color: #001b0d;
+}
+
+.newgame {
+    background: linear-gradient(90deg, #2500ff, #5100ff);
+}
+
+.message {
+    min-height: 45px;
+    margin-top: 18px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.attempts {
+    margin-top: 15px;
+    color: #ff38b9;
+    font-size: 18px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <h1>ELMORALY</h1>
+
+    <div class="subtitle">
+        GUESS THE NUMBER
+    </div>
+
+    <div class="score">
+        🏆 SCORE: <span id="score">0</span>
+    </div>
+
+    <div class="info">
+        Guess a number from 1 to 10
+    </div>
+
+    <input
+        id="guessInput"
+        type="number"
+        min="1"
+        max="10"
+        placeholder="Enter your number"
+    >
+
+    <button class="guess" onclick="guessNumber()">
+        GUESS
+    </button>
+
+    <button class="newgame" onclick="newGame()">
+        NEW GAME
+    </button>
+
+    <div class="message" id="message"></div>
+
+    <div class="attempts">
+        ❤️ You have <span id="attempts">3</span> attempts
+    </div>
+
+</div>
+
+<script>
+
+let secretNumber;
+let score = 0;
+let attempts = 3;
+
+function generateNumber() {
+    secretNumber = Math.floor(Math.random() * 10) + 1;
+}
+
+function guessNumber() {
+
+    const input = document.getElementById("guessInput");
+    const guess = Number(input.value);
+    const message = document.getElementById("message");
+
+    if (guess < 1 || guess > 10 || !guess) {
+        message.style.color = "#ff4444";
+        message.textContent = "Enter a number from 1 to 10!";
+        return;
+    }
+
+    if (attempts <= 0) {
+        message.style.color = "#ff4444";
+        message.textContent = "No attempts left! Press NEW GAME.";
+        return;
+    }
+
+    if (guess === secretNumber) {
+
+        score += 10;
+        document.getElementById("score").textContent = score;
+
+        message.style.color = "#00ff91";
+        message.textContent = "🎉 CORRECT! New number generated!";
+
+        // أهم جزء:
+        // لما الإجابة تكون صح، الرقم بيتغير فورًا
+        generateNumber();
+
+        attempts = 3;
+        document.getElementById("attempts").textContent = attempts;
+
+        input.value = "";
+
+    } else {
+
+        attempts--;
+
+        document.getElementById("attempts").textContent = attempts;
+
+        if (attempts > 0) {
+
+            if (guess < secretNumber) {
+                message.style.color = "#ffaa00";
+                message.textContent = "⬆️ Try a higher number!";
+            } else {
+                message.style.color = "#ffaa00";
+                message.textContent = "⬇️ Try a lower number!";
+            }
+
+        } else {
+
+            message.style.color = "#ff4444";
+            message.textContent =
+                "❌ Game Over! The number was " + secretNumber;
+        }
+    }
+}
+
+function newGame() {
+
+    // يرجع المحاولات من الأول
+    attempts = 3;
+
+    // يولد رقم جديد
+    generateNumber();
+
+    // يمسح خانة الرقم
+    document.getElementById("guessInput").value = "";
+
+    // يرجع المحاولات 3
+    document.getElementById("attempts").textContent = attempts;
+
+    // يمسح الرسالة
+    document.getElementById("message").textContent = "";
+}
+
+// تشغيل اللعبة أول مرة
+generateNumber();
+
+</script>
+
+</body>
+  </html>
